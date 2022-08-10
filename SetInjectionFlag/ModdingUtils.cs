@@ -2,6 +2,7 @@
 using BepInEx;
 using UnityEngine.SceneManagement;
 using System;
+using System.Collections.Generic;
 using BepInEx.Logging;
 using TMPro;
 
@@ -9,7 +10,8 @@ namespace ModdingTales
 {
     public static class ModdingUtils
     {
-        private static BaseUnityPlugin parentPlugin;
+        private static List<BaseUnityPlugin> parentPlugins = new List<BaseUnityPlugin>();
+
         private static ManualLogSource parentLogger;
         
         public static TextMeshProUGUI GetUITextByName(string name)
@@ -28,41 +30,48 @@ namespace ModdingTales
         public static void Initialize(BaseUnityPlugin parentPlugin, ManualLogSource logger, bool startSocket=false)
         {
             AppStateManager.UsingCodeInjection = true;
-            ModdingUtils.parentPlugin = parentPlugin;
+            ModdingUtils.parentPlugins.Add(parentPlugin);
             parentLogger = logger;
             parentLogger.LogInfo("Inside initialize");
-            SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
         public static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            try
+            foreach (var parentPlugin in parentPlugins)
             {
-                parentLogger.LogInfo("On Scene Loaded" + scene.name);
-                Debug.Log("Loading Scene: " + scene.name);
-                if (scene.name == "UI") {
-                    TextMeshProUGUI betaText = GetUITextByName("BETA");
-                    if (betaText)
-                    {
-                        betaText.text = "INJECTED BUILD - unstable mods";
-                    }
-                } else 
+                try
                 {
-                    TextMeshProUGUI modListText = GetUITextByName("TextMeshPro Text");
-                    if (modListText)
+                    parentLogger.LogInfo("On Scene Loaded" + scene.name);
+                    Debug.Log("Loading Scene: " + scene.name);
+                    if (scene.name == "UI")
                     {
-                        BepInPlugin bepInPlugin = (BepInPlugin)Attribute.GetCustomAttribute(ModdingUtils.parentPlugin.GetType(), typeof(BepInPlugin));
-                        if (modListText.text.EndsWith("</size>"))
+                        TextMeshProUGUI betaText = GetUITextByName("BETA");
+                        if (betaText)
                         {
-                            modListText.text += "\n\nMods Currently Installed:\n";
+                            betaText.text = "INJECTED BUILD - unstable mods";
                         }
-                        modListText.text += "\n" + bepInPlugin.Name + " - " + bepInPlugin.Version;
+                    }
+                    else
+                    {
+                        TextMeshProUGUI modListText = GetUITextByName("TextMeshPro Text");
+                        if (modListText)
+                        {
+                            BepInPlugin bepInPlugin =
+                                (BepInPlugin)Attribute.GetCustomAttribute(parentPlugin.GetType(),
+                                    typeof(BepInPlugin));
+                            if (modListText.text.EndsWith("</size>"))
+                            {
+                                modListText.text += "\n\nMods Currently Installed:\n";
+                            }
+
+                            modListText.text += "\n" + bepInPlugin.Name + " - " + bepInPlugin.Version;
+                        }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                parentLogger.LogFatal(ex);
+                catch (Exception ex)
+                {
+                    parentLogger.LogFatal(ex);
+                }
             }
         }
     }
