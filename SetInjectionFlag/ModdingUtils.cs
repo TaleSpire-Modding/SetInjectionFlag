@@ -3,49 +3,54 @@ using BepInEx;
 using UnityEngine.SceneManagement;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using BepInEx.Configuration;
 using BepInEx.Logging;
+using JetBrains.Annotations;
 using TMPro;
 
 namespace ModdingTales
 {
     public static class ModdingUtils
     {
-        private static List<BaseUnityPlugin> parentPlugins = new List<BaseUnityPlugin>();
+        public enum LogLevel
+        {
+            [UsedImplicitly] Inherited,
+            [UsedImplicitly] None,
+            [UsedImplicitly] Low,
+            [UsedImplicitly] Medium,
+            [UsedImplicitly] High,
+            [UsedImplicitly] All,
+        }
 
-        private static ManualLogSource parentLogger;
+        public static ConfigEntry<LogLevel> LogLevelConfig { get; set; }
+
+        private static readonly List<BaseUnityPlugin> ParentPlugins = new List<BaseUnityPlugin>();
+
+        private static ManualLogSource _parentLogger;
         
         public static TextMeshProUGUI GetUITextByName(string name)
-        {
-            TextMeshProUGUI[] texts = UnityEngine.Object.FindObjectsOfType<TextMeshProUGUI>();
-            for (int i = 0; i < texts.Length; i++)
-            {
-                if (texts[i].name == name)
-                {
-                    return texts[i];
-                }
-            }
-            return null;
-        }
+         => UnityEngine.Object.FindObjectsOfType<TextMeshProUGUI>().SingleOrDefault(t => t.name == name);
 
         public static void Initialize(BaseUnityPlugin parentPlugin, ManualLogSource logger, bool startSocket=false)
         {
             AppStateManager.UsingCodeInjection = true;
-            ModdingUtils.parentPlugins.Add(parentPlugin);
-            parentLogger = logger;
-            parentLogger.LogInfo("Inside initialize");
+            ParentPlugins.Add(parentPlugin);
+            _parentLogger = logger;
+            _parentLogger.LogInfo("Inside initialize");
         }
 
         public static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            foreach (var parentPlugin in parentPlugins)
+            foreach (var parentPlugin in ParentPlugins)
             {
                 try
                 {
-                    parentLogger.LogInfo("On Scene Loaded" + scene.name);
+                    _parentLogger.LogInfo("On Scene Loaded" + scene.name);
                     Debug.Log("Loading Scene: " + scene.name);
                     if (scene.name == "UI")
                     {
-                        TextMeshProUGUI betaText = GetUITextByName("BETA");
+                        var betaText = GetUITextByName("BETA");
                         if (betaText)
                         {
                             betaText.text = "INJECTED BUILD - unstable mods";
@@ -53,24 +58,21 @@ namespace ModdingTales
                     }
                     else
                     {
-                        TextMeshProUGUI modListText = GetUITextByName("TextMeshPro Text");
-                        if (modListText)
+                        var modListText = GetUITextByName("TextMeshPro Text");
+                        if (!modListText) continue;
+                        var bepInPlugin =
+                            (BepInPlugin)Attribute.GetCustomAttribute(parentPlugin.GetType(),
+                                typeof(BepInPlugin));
+                        if (modListText.text.EndsWith("</size>"))
                         {
-                            BepInPlugin bepInPlugin =
-                                (BepInPlugin)Attribute.GetCustomAttribute(parentPlugin.GetType(),
-                                    typeof(BepInPlugin));
-                            if (modListText.text.EndsWith("</size>"))
-                            {
-                                modListText.text += "\n\nMods Currently Installed:\n";
-                            }
-
-                            modListText.text += "\n" + bepInPlugin.Name + " - " + bepInPlugin.Version;
+                            modListText.text += "\n\nMods Currently Installed:\n";
                         }
+                        modListText.text += "\n" + bepInPlugin.Name + " - " + bepInPlugin.Version;
                     }
                 }
                 catch (Exception ex)
                 {
-                    parentLogger.LogFatal(ex);
+                    _parentLogger.LogFatal(ex);
                 }
             }
         }
