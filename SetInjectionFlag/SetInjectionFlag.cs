@@ -11,7 +11,7 @@ namespace PluginUtilities
     {
         public const string Guid = "org.generic.plugins.setinjectionflag";
         public const string Name = "Set Injection Flag Plugin";
-        public const string Version = "2.3.3.0";
+        public const string Version = "2.3.4.0";
 
         
         public static void DoConfig(ConfigFile config)
@@ -27,7 +27,7 @@ namespace PluginUtilities
         {
             Logger.LogInfo("In Awake for SetInjectionFlag Plug-in");
             UnityEngine.Debug.Log("SetInjectionFlag Plug-in loaded");
-            ModdingUtils.Initialize(this, this.Logger);
+            ModdingUtils.Initialize(this, Logger);
             SceneManager.sceneLoaded += ModdingUtils.OnSceneLoaded;
             DoConfig(Config);
         }

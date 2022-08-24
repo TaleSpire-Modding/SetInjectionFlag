@@ -25,19 +25,26 @@ namespace ModdingTales
 
         public static ConfigEntry<LogLevel> LogLevelConfig { get; set; }
 
-        private static readonly List<BaseUnityPlugin> ParentPlugins = new List<BaseUnityPlugin>();
+        private static readonly Dictionary<BaseUnityPlugin, ManualLogSource> ParentPlugins = new Dictionary<BaseUnityPlugin, ManualLogSource>();
 
-        private static ManualLogSource _parentLogger;
-        
         public static TextMeshProUGUI GetUITextByName(string name)
-         => UnityEngine.Object.FindObjectsOfType<TextMeshProUGUI>().SingleOrDefault(t => t.name == name);
+        {
+            TextMeshProUGUI[] texts = UnityEngine.Object.FindObjectsOfType<TextMeshProUGUI>();
+            for (int i = 0; i < texts.Length; i++)
+            {
+                if (texts[i].name == name)
+                {
+                    return texts[i];
+                }
+            }
+            return null;
+        }
 
         public static void Initialize(BaseUnityPlugin parentPlugin, ManualLogSource logger, bool startSocket=false)
         {
             AppStateManager.UsingCodeInjection = true;
-            ParentPlugins.Add(parentPlugin);
-            _parentLogger = logger;
-            _parentLogger.LogInfo("Inside initialize");
+            ParentPlugins.Add(parentPlugin,logger);
+            logger.LogInfo("Inside initialize");
         }
 
         public static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -46,7 +53,7 @@ namespace ModdingTales
             {
                 try
                 {
-                    _parentLogger.LogInfo("On Scene Loaded" + scene.name);
+                    parentPlugin.Value.LogInfo("On Scene Loaded " + scene.name);
                     Debug.Log("Loading Scene: " + scene.name);
                     if (scene.name == "UI")
                     {
@@ -61,7 +68,7 @@ namespace ModdingTales
                         var modListText = GetUITextByName("TextMeshPro Text");
                         if (!modListText) continue;
                         var bepInPlugin =
-                            (BepInPlugin)Attribute.GetCustomAttribute(parentPlugin.GetType(),
+                            (BepInPlugin)Attribute.GetCustomAttribute(parentPlugin.Key.GetType(),
                                 typeof(BepInPlugin));
                         if (modListText.text.EndsWith("</size>"))
                         {
@@ -72,7 +79,7 @@ namespace ModdingTales
                 }
                 catch (Exception ex)
                 {
-                    _parentLogger.LogFatal(ex);
+                    parentPlugin.Value.LogFatal(ex);
                 }
             }
         }
