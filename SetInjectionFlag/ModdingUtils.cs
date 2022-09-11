@@ -82,8 +82,8 @@ namespace ModdingTales
                         }
 
                         modListText.text += string.IsNullOrWhiteSpace(parentPlugin.Key.Item2) ? 
-                            modListText.text += $"\n {bepInPlugin.Name} - {bepInPlugin.Version}" : 
-                            modListText.text += $"\n {parentPlugin.Key.Item2} {bepInPlugin.Name} - {bepInPlugin.Version}";
+                            $"\n{bepInPlugin.Name} - {bepInPlugin.Version}" : 
+                            $"\n{parentPlugin.Key.Item2} {bepInPlugin.Name} - {bepInPlugin.Version}";
                     }
                 }
                 catch (Exception ex)
