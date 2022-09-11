@@ -3,7 +3,6 @@ using BepInEx;
 using UnityEngine.SceneManagement;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using JetBrains.Annotations;
@@ -25,8 +24,8 @@ namespace ModdingTales
 
         public static ConfigEntry<LogLevel> LogLevelConfig { get; set; }
 
-        private static readonly Dictionary<BaseUnityPlugin, ManualLogSource> ParentPlugins = new Dictionary<BaseUnityPlugin, ManualLogSource>();
-
+        private static readonly Dictionary<(BaseUnityPlugin, string), ManualLogSource> ParentPlugins = new Dictionary<(BaseUnityPlugin, string), ManualLogSource>();
+        
         public static TextMeshProUGUI GetUITextByName(string name)
         {
             TextMeshProUGUI[] texts = UnityEngine.Object.FindObjectsOfType<TextMeshProUGUI>();
@@ -40,10 +39,17 @@ namespace ModdingTales
             return null;
         }
 
+        public static void Initialize(BaseUnityPlugin parentPlugin, ManualLogSource logger, string author, bool startSocket = false)
+        {
+            AppStateManager.UsingCodeInjection = true;
+            ParentPlugins.Add((parentPlugin,author), logger);
+            logger.LogInfo("Inside initialize");
+        }
+
         public static void Initialize(BaseUnityPlugin parentPlugin, ManualLogSource logger, bool startSocket=false)
         {
             AppStateManager.UsingCodeInjection = true;
-            ParentPlugins.Add(parentPlugin,logger);
+            ParentPlugins.Add((parentPlugin,""),logger);
             logger.LogInfo("Inside initialize");
         }
 
@@ -68,13 +74,16 @@ namespace ModdingTales
                         var modListText = GetUITextByName("TextMeshPro Text");
                         if (!modListText) continue;
                         var bepInPlugin =
-                            (BepInPlugin)Attribute.GetCustomAttribute(parentPlugin.Key.GetType(),
+                            (BepInPlugin)Attribute.GetCustomAttribute(parentPlugin.Key.Item1.GetType(),
                                 typeof(BepInPlugin));
                         if (modListText.text.EndsWith("</size>"))
                         {
                             modListText.text += "\n\nMods Currently Installed:\n";
                         }
-                        modListText.text += "\n" + bepInPlugin.Name + " - " + bepInPlugin.Version;
+
+                        modListText.text += string.IsNullOrWhiteSpace(parentPlugin.Key.Item2) ? 
+                            modListText.text += $"\n {bepInPlugin.Name} - {bepInPlugin.Version}" : 
+                            modListText.text += $"\n {parentPlugin.Key.Item2} {bepInPlugin.Name} - {bepInPlugin.Version}";
                     }
                 }
                 catch (Exception ex)
