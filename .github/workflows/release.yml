@@ -4,28 +4,21 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'manifest.json'
   repository_dispatch:
     types: [regress_update, TaleSpire-Modding-Pipelines/AutomationDlls]
 
 jobs:
   build:
     runs-on: windows-latest
-    outputs:
-      all: ${{ steps.changes.outputs.all}}
-      json: ${{ steps.changes.outputs.json }}
     steps:
       - name: Setup Nuget
         uses: nuget/setup-nuget@v1
 
       - name: Checkout
         uses: actions/checkout@v2
-      
-      - shell: pwsh
-        id: changes
-        run: |
-          echo "all=$(git diff --name-only --diff-filter=ACMRT ${{ github.event.push.base.sha }} ${{ github.sha }} | xargs)" >> $GITHUB_OUTPUT
-          echo "json=$(git diff --name-only --diff-filter=ACMRT ${{ github.event.push.base.sha }} ${{ github.sha }} | grep .json$ | xargs)" >> $GITHUB_OUTPUT
-      
+            
       - name: Download artifact (Dispatched)
         if: ${{ github.event.client_payload.branch != null}}
         uses: dawidd6/action-download-artifact@v2
@@ -61,9 +54,7 @@ jobs:
   release:
     runs-on: windows-latest
     needs: [ build ]
-    if: ${{needs.build.outputs.json}}
     steps:
-      - run: echo ${{needs.build.outputs.json}}
       - run: |
           echo publish docs
           dotnet pack SetInjectionFlag.csproj --configuration Release
