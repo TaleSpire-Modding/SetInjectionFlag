@@ -10,6 +10,9 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    outputs:
+      all: ${{ steps.changes.outputs.all}}
+      md: ${{ steps.changes.outputs.ts }}
     steps:
       - name: Setup Nuget
         uses: nuget/setup-nuget@v1
