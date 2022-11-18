@@ -2,7 +2,7 @@
     "name": "SetInjectionFlagPlugin",
     "version_number": "2.3.6",
     "website_url": "https://github.com/TaleSpire-Modding/SetInjectionFlag",
-    "description": "Allows players to flag mods are installed",
+    "description": "Allows players to flag that mods are installed",
     "dependencies": [
         "bbepisTaleSpire-BepInExPack-5.4.10"
     ]
