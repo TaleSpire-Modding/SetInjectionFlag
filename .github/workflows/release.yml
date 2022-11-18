@@ -12,7 +12,7 @@ jobs:
     runs-on: windows-latest
     outputs:
       all: ${{ steps.changes.outputs.all}}
-      md: ${{ steps.changes.outputs.ts }}
+      json: ${{ steps.changes.outputs.json }}
     steps:
       - name: Setup Nuget
         uses: nuget/setup-nuget@v1
@@ -24,8 +24,7 @@ jobs:
         id: check_file_changed
         run: |
           echo "::set-output name=all::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | xargs)"
-          echo "::set-output name=md::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep .md$ | xargs)"
-
+          echo "::set-output name=json::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep .json$ | xargs)"
       
       - name: Download artifact (Dispatched)
         if: ${{ github.event.client_payload.branch != null}}
@@ -62,9 +61,9 @@ jobs:
   release:
     runs-on: windows-latest
     needs: [ build ]
-    if: ${{needs.build.outputs.md}}
+    if: ${{needs.build.outputs.json}}
     steps:
-      - run: echo ${{needs.build.outputs.md}}
+      - run: echo ${{needs.build.outputs.json}}
       - run: |
           echo publish docs
           dotnet pack SetInjectionFlag.csproj --configuration Release
