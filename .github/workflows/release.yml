@@ -20,15 +20,9 @@ jobs:
       - shell: pwsh
         id: check_file_changed
         run: |
-          # Diff HEAD with the previous commit
-          $diff = git diff --name-only HEAD^ HEAD
+          echo "::set-output name=all::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | xargs)"
+          echo "::set-output name=md::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep .md$ | xargs)"
 
-          # Check if a file under docs/ or with the .md extension has changed (added, modified, deleted)
-          $SourceDiff = $diff | Where-Object { $_ -match '^docs/' -or $_ -match '.md$' }
-          $HasDiff = $SourceDiff.Length -gt 0
-
-          # Set the output named "docs_changed"
-          Write-Host "::set-output name=docs_changed::$HasDiff"
       
       - name: Download artifact (Dispatched)
         if: ${{ github.event.client_payload.branch != null}}
@@ -65,11 +59,11 @@ jobs:
   release:
     runs-on: windows-latest
     needs: [ build ]
-    if: needs.build.outputs.docs_changed == 'True'
+    if: ${{needs.build.outputs.md}}
     steps:
-    - shell: pwsh
-      run: |
-        echo publish docs
-        dotnet pack SetInjectionFlag.csproj --configuration Release
+      - run: echo ${{needs.build.outputs.md}}
+      - run: |
+          echo publish docs
+          dotnet pack SetInjectionFlag.csproj --configuration Release
       # Release package (need to dynamically bind version from COM)
       # dotnet nuget push "bin/Release/OctocatApp.1.0.0.nupkg"  --api-key YOUR_GITHUB_PAT --source "github"
