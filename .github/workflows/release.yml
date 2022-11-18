@@ -64,8 +64,8 @@ jobs:
 
   release:
     runs-on: windows-latest
-    needs: [ conditional_job_check_files ]
-    if: needs.conditional_job_check_files.outputs.docs_changed == 'True'
+    needs: [ build ]
+    if: needs.build.outputs.docs_changed == 'True'
     steps:
     - shell: pwsh
       run: |
