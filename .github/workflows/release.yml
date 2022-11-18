@@ -47,14 +47,14 @@ jobs:
       - name: build
         run: |
           cd SetInjectionFlag
-          dotnet restore SetInjectionFlag.csproj
-          dotnet build SetInjectionFlag.csproj --configuration Release
+          # dotnet restore SetInjectionFlag.csproj
+          # dotnet build SetInjectionFlag.csproj --configuration Release
           
-      - name: Upload new artifacts
-        uses: actions/upload-artifact@master
-        with:
-          name: dlls
-          path: RadialUIPlugin\bin\Release\RadialUI.dll
+#       - name: Upload new artifacts
+#         uses: actions/upload-artifact@master
+#         with:
+#           name: dlls
+#           path: RadialUIPlugin\bin\Release\RadialUI.dll
 
   release:
     runs-on: windows-latest
