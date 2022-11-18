@@ -23,8 +23,8 @@ jobs:
       - shell: pwsh
         id: check_file_changed
         run: |
-          echo "::set-output name=all::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | xargs)"
-          echo "::set-output name=json::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep .json$ | xargs)"
+          echo "::set-output name=all::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.push.base.sha }} ${{ github.sha }} | xargs)"
+          echo "::set-output name=json::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.push.base.sha }} ${{ github.sha }} | grep .json$ | xargs)"
       
       - name: Download artifact (Dispatched)
         if: ${{ github.event.client_payload.branch != null}}
