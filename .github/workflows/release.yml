@@ -35,7 +35,7 @@ jobs:
           repo: TaleSpire-Modding-Pipelines/AutomationDlls
       
       - name: Download artifact (Pushed)
-        if: ${{ github.event.client_payload.branch == null}}
+        if: ${{ github.event.client_payload.branch != null}}
         uses: dawidd6/action-download-artifact@v2
         with:
           github_token: ${{ secrets.dll_pat }}
