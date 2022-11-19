@@ -11,7 +11,7 @@ namespace PluginUtilities
     {
         public const string Guid = "org.generic.plugins.setinjectionflag";
         public const string Name = "Set Injection Flag Plugin";
-        public const string Version = "2.4.0.0";
+        public const string Version = "2.4.1.0";
 
         
         public static void DoConfig(ConfigFile config)

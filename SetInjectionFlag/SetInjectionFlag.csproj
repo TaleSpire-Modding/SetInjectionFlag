@@ -4,7 +4,7 @@
     <TargetFramework>net48</TargetFramework>
     <AssemblyName>SetInjectionFlagPlugin</AssemblyName>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>2.4.0</Version>
+    <Version>2.4.1</Version>
     <PackageId>TaleSpire.$(AssemblyName)</PackageId>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
     <RepositoryType>git</RepositoryType>
@@ -15,6 +15,7 @@
     <PackageTags>TaleSpire;Mods;</PackageTags>
     <licenseUrl>https://github.com/TaleSpire-Modding/SetInjectionFlag/raw/main/LICENSE.txt</licenseUrl>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
+    <Authors>HolloFox</Authors>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\License.txt">
@@ -28,7 +29,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="TaleSpire" Version="0.0.3"></PackageReference>
-    <PackageReference Include="Talespire.BepInEx" Version="5.4.10"></PackageReference>
+    <PackageReference Include="Talespire.BepInEx" Version="5.4.11"></PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
