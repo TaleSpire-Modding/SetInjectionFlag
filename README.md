@@ -14,19 +14,7 @@ Just install, this will automatically update TaleSpire so the devs know you are 
 
 Open ```SetInjectionFlagPlugin.sln``` in Visual Studio.
 
-You will need to add references to:
-
-```
-* BepInEx.dll  (Download from the BepInEx project.)
-* Bouncyrock.TaleSpire.Runtime (found in Steam\steamapps\common\TaleSpire\TaleSpire_Data\Managed)
-* UnityEngine.dll
-* UnityEngine.CoreModule.dll
-* UnityEngine.InputLegacyModule.dll 
-* UnityEngine.UI
-* Unity.TextMeshPro
-```
-
-Build the project.
+Build the project (Now using Nuget for package dependency).
 
 Browse to the newly created ```bin/Debug``` or ```bin/Release``` folders and copy the ```SetInjectionFlagPlugin.dll``` to ```Steam\steamapps\common\TaleSpire\BepInEx\plugins```
 
