@@ -42,21 +42,7 @@ jobs:
       - name: build
         run: |
           cd SetInjectionFlag
-          # dotnet restore SetInjectionFlag.csproj
-          # dotnet build SetInjectionFlag.csproj --configuration Release
-          
-#       - name: Upload new artifacts
-#         uses: actions/upload-artifact@master
-#         with:
-#           name: dlls
-#           path: RadialUIPlugin\bin\Release\RadialUI.dll
-
-  release:
-    runs-on: windows-latest
-    needs: [ build ]
-    steps:
-      - run: |
-          echo publish docs
-          dotnet pack SetInjectionFlag.csproj --configuration Release
-      # Release package (need to dynamically bind version from COM)
-      # dotnet nuget push "bin/Release/OctocatApp.1.0.0.nupkg"  --api-key YOUR_GITHUB_PAT --source "github"
+          dotnet restore SetInjectionFlag.csproj
+          dotnet build SetInjectionFlag.csproj --configuration Release
+          cd bin/Release
+          dotnet nuget push *.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source https://nuget.pkg.github.com/${{ github.repository_owner }}
