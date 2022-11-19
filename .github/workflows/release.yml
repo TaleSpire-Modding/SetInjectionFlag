@@ -7,8 +7,6 @@ on:
     paths:
       - 'manifest.json'
       - '.github/workflows/release.yml'
-  repository_dispatch:
-    types: [regress_update, TaleSpire-Modding-Pipelines/AutomationDlls]
 
 jobs:
   Build_and_Release:
