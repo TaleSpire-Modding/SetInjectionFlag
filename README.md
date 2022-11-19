@@ -32,6 +32,7 @@ Browse to the newly created ```bin/Debug``` or ```bin/Release``` folders and cop
 
 ## Changelog
 ```
+* 2.4.1 Updating package details and dependency
 * 2.4.0 Package released on Github and Nuget
 * 2.3.6 Update repository, working on dynamic Nuget hosting and deployment.
 * 2.3.5 Streamline scene UI
