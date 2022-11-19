@@ -4,10 +4,19 @@
     <TargetFramework>net48</TargetFramework>
     <AssemblyName>SetInjectionFlagPlugin</AssemblyName>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>$(FileVersion)</Version>
+    <Version>2.4.0</Version>
     <PackageId>TaleSpire.$(AssemblyName)</PackageId>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/TaleSpire-Modding/SetInjectionFlag.git</RepositoryUrl>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="TaleSpire" Version="0.0.3"></PackageReference>
     <PackageReference Include="Talespire.BepInEx" Version="5.4.10"></PackageReference>
