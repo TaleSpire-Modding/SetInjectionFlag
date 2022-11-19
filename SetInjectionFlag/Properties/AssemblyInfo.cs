@@ -34,3 +34,4 @@ using PluginUtilities;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion(SetInjectionFlag.Version)]
 [assembly: AssemblyFileVersion(SetInjectionFlag.Version)]
+[assembly: AssemblyInformationalVersion(SetInjectionFlag.Version)]

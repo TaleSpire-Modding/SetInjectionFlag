@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetInjectionFlag", "SetInjectionFlag\SetInjectionFlag.csproj", "{B1D07128-5C44-4003-B05F-D35A122E975A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SetInjectionFlag2", "SetInjectionFlag2\SetInjectionFlag2.csproj", "{74342CF0-D69A-45F0-9060-F2592096C4FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SetInjectionFlag", "SetInjectionFlag\SetInjectionFlag.csproj", "{7EDE1356-9FEA-49A0-8581-CC6BA89247FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B1D07128-5C44-4003-B05F-D35A122E975A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B1D07128-5C44-4003-B05F-D35A122E975A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B1D07128-5C44-4003-B05F-D35A122E975A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B1D07128-5C44-4003-B05F-D35A122E975A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{74342CF0-D69A-45F0-9060-F2592096C4FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{74342CF0-D69A-45F0-9060-F2592096C4FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{74342CF0-D69A-45F0-9060-F2592096C4FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{74342CF0-D69A-45F0-9060-F2592096C4FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EDE1356-9FEA-49A0-8581-CC6BA89247FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EDE1356-9FEA-49A0-8581-CC6BA89247FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EDE1356-9FEA-49A0-8581-CC6BA89247FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EDE1356-9FEA-49A0-8581-CC6BA89247FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
