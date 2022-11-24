@@ -1,4 +1,4 @@
-name: Push to nuget feed on release
+name: Checks Builds on PR
 
 on: [pull_request]
 
