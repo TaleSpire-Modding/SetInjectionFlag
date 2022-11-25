@@ -18,6 +18,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build and Publish
+        shell: pwsh
         run: |
           cd SetInjectionFlag
           chmod +rwx update.ps1
@@ -29,6 +30,7 @@ jobs:
           dotnet nuget push *.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source https://nuget.pkg.github.com/${{ github.repository_owner }} --skip-duplicate
           
       - name: Package for ThunderStore
+        shell: pwsh
         run: |
           New-Item -Path 'thunderstore' -ItemType Directory
           Copy-Item -Path icon.png -Destination 'thunderstore'
