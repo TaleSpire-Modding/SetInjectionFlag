@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: build and publish
+      - name: Build and Publish
         run: |
           cd SetInjectionFlag
           ./update.ps1
@@ -26,3 +26,23 @@ jobs:
           cd bin/Release
           dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json --skip-duplicate
           dotnet nuget push *.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source https://nuget.pkg.github.com/${{ github.repository_owner }} --skip-duplicate
+          
+      - name: Package for ThunderStore
+        run: |
+          New-Item -Path 'thunderstore' -ItemType Directory
+          Copy-Item -Path icon.png -Destination 'thunderstore'
+          Copy-Item -Path License.txt -Destination 'thunderstore'
+          Copy-Item -Path manifest.json -Destination 'thunderstore'
+          Copy-Item -Path README.md -Destination 'thunderstore'
+          Copy-Item -Path SetInjectionFlag/bin/Release/net48/SetInjectionFlagPlugin.dll -Destination 'thunderstore'
+
+      - uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r thunderstore/thunderStore.zip thunderstore
+      
+
+#       - name: Publish for ThunderStore
+#         run: |
+#           dotnet tool install --global tcli --version 0.1.4
+#           tcli --init
+#           tcli publish --file thunderStore.zip --token
