@@ -38,6 +38,9 @@ jobs:
           Copy-Item -Path manifest.json -Destination 'thunderstore'
           Copy-Item -Path README.md -Destination 'thunderstore'
           Copy-Item -Path SetInjectionFlag/bin/Release/net48/SetInjectionFlagPlugin.dll -Destination 'thunderstore'
+          $json = Get-Content "manifest.json" | ConvertFrom-Json
+          VERSION_NUMBER=$json.version_number
+          echo "VERSION_NUMBER=${VERSION_NUMBER}" >> $GITHUB_ENV
       
       - uses: GreenTF/upload-thunderstore-package@v2.2
         with:
@@ -45,7 +48,7 @@ jobs:
           description: Allows players to flag that mods are installed for BouncyRock.
           token: ${{ secrets.BRCODING_TOKEN }}
           name: SetInjectionFlagPlugin # the name of the package
-          version: ${{ env.VERSION}} # Use the version from manifest
+          version: ${{env.VERSION_NUMBER}} # Use the version from manifest
           community: talespire
           path: thunderstore
           wrap: thunderstore
