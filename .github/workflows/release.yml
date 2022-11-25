@@ -44,7 +44,7 @@ jobs:
           echo "VERSION_NUMBER=${json.version_number}" >> $GITHUB_OUTPUT
           echo $json.version_number
       
-      - name: Test package outputs
+      - name: Test output
         shell: pwsh
         run: echo ${{steps.package.outputs.VERSION_NUMBER}}
       
