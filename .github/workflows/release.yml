@@ -6,8 +6,6 @@ on:
       - master
     paths:
       - 'manifest.json'
-      - '.github/workflows/release.yml'
-      - 'SetInjectionFlag/SetInjectionFlag.csproj'
 
 jobs:
   Build_and_Release:
@@ -22,6 +20,7 @@ jobs:
       - name: build and publish
         run: |
           cd SetInjectionFlag
+          ./update.ps1
           dotnet restore SetInjectionFlag.csproj
           dotnet build SetInjectionFlag.csproj --configuration Release
           cd bin/Release
