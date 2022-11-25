@@ -44,6 +44,10 @@ jobs:
           echo "VERSION_NUMBER=${json.version_number}" >> $GITHUB_OUTPUT
           echo $json.version_number
       
+      - name: Test package outputs
+        shell: pwsh
+        run: echo ${{steps.package.outputs.VERSION_NUMBER}}
+      
       - uses: GreenTF/upload-thunderstore-package@v2.2
         with:
           namespace: brcoding # the thunderstore 'team' to publish under
