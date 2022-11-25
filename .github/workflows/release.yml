@@ -20,6 +20,7 @@ jobs:
       - name: Build and Publish
         run: |
           cd SetInjectionFlag
+          chmod +rwx update.ps1
           ./update.ps1
           dotnet restore SetInjectionFlag.csproj
           dotnet build SetInjectionFlag.csproj --configuration Release
