@@ -41,12 +41,13 @@ jobs:
           Copy-Item -Path README.md -Destination 'thunderstore'
           Copy-Item -Path SetInjectionFlag/bin/Release/net48/SetInjectionFlagPlugin.dll -Destination 'thunderstore'
           $json = Get-Content "manifest.json" | ConvertFrom-Json
-          echo "VERSION_NUMBER=${json.version_number}" >> $GITHUB_OUTPUT
+          echo "VERSION_NUMBER=$json.version_number" >> $GITHUB_OUTPUT
           echo $json.version_number
       
       - name: Test output
         shell: pwsh
-        run: echo ${{steps.package.outputs.VERSION_NUMBER}}
+        run: |
+          echo ${{steps.package.outputs.VERSION_NUMBER}}
       
       - uses: GreenTF/upload-thunderstore-package@v2.2
         with:
