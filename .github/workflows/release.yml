@@ -9,7 +9,7 @@ on:
 
 jobs:
   Build_and_Release:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Setup Nuget
         uses: nuget/setup-nuget@v1
@@ -19,6 +19,8 @@ jobs:
 
       - name: Build and Publish
         run: |
+          $json = Get-Content "manifest.json" | ConvertFrom-Json
+          $version = $json.version_number
           cd SetInjectionFlag
           ./update.ps1
           dotnet restore SetInjectionFlag.csproj
@@ -42,7 +44,7 @@ jobs:
           description: Allows players to flag that mods are installed for BouncyRock.
           token: ${{ secrets.BRCODING_TOKEN }}
           name: SetInjectionFlagPlugin # the name of the package
-          version: $GITHUB_REF_NAME # Use the tag as the package version
+          version: $version # Use the version from manifest
           community: talespire
           path: thunderstore
           wrap: thunderstore
