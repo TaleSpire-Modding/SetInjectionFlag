@@ -52,5 +52,4 @@ jobs:
           version: ${{steps.package.outputs.VERSION_NUMBER}} # Use the version from manifest
           community: talespire
           path: thunderstore
-          wrap: thunderstore
           deps: bbepisTaleSpire-BepInExPack@5.4.10
