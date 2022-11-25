@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'manifest.json'
+#    paths:
+#      - 'manifest.json'
 
 jobs:
   Build_and_Release:
@@ -35,14 +35,15 @@ jobs:
           Copy-Item -Path manifest.json -Destination 'thunderstore'
           Copy-Item -Path README.md -Destination 'thunderstore'
           Copy-Item -Path SetInjectionFlag/bin/Release/net48/SetInjectionFlagPlugin.dll -Destination 'thunderstore'
-
-      - uses: montudor/action-zip@v1
-        with:
-          args: zip -qq -r thunderstore/thunderStore.zip thunderstore
       
-
-#       - name: Publish for ThunderStore
-#         run: |
-#           dotnet tool install --global tcli --version 0.1.4
-#           tcli --init
-#           tcli publish --file thunderStore.zip --token
+      - uses: GreenTF/upload-thunderstore-package@v2.2
+        with:
+          namespace: brcoding # the thunderstore 'team' to publish under
+          description: Allows players to flag that mods are installed for BouncyRock.
+          token: ${{ secrets.BRCODING_TOKEN }}
+          name: SetInjectionFlagPlugin # the name of the package
+          version: $GITHUB_REF_NAME # Use the tag as the package version
+          community: talespire
+          path: thunderstore
+          wrap: thunderstore
+          deps: bbepisTaleSpire-BepInExPack@5.4.10
