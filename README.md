@@ -21,6 +21,7 @@ Browse to the newly created ```bin/Debug``` or ```bin/Release``` folders and cop
 
 ## Changelog
 ```
+* 2.4.2 Test deploy using pipeline
 * 2.4.1 Updating package details and dependency
 * 2.4.0 Package released on Github and Nuget
 * 2.4.0 Framework upgrade from 4.7.2 Tool to 4.8 SDK
