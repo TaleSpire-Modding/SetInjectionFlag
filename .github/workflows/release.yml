@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-#    paths:
-#      - 'manifest.json'
+    paths:
+      - 'manifest.json'
 
 jobs:
   Build_and_Release:
@@ -42,12 +42,6 @@ jobs:
           $json = Get-Content "manifest.json" | ConvertFrom-Json
           $version = $json.version_number
           echo "VERSION_NUMBER=${version}" >> $env:GITHUB_OUTPUT
-          echo $vesion
-      
-      - name: Test output
-        shell: pwsh
-        run: |
-          echo ${{steps.package.outputs.VERSION_NUMBER}}
       
       - uses: GreenTF/upload-thunderstore-package@v2.2
         with:
