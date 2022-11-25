@@ -40,8 +40,9 @@ jobs:
           Copy-Item -Path README.md -Destination 'thunderstore'
           Copy-Item -Path SetInjectionFlag/bin/Release/net48/SetInjectionFlagPlugin.dll -Destination 'thunderstore'
           $json = Get-Content "manifest.json" | ConvertFrom-Json
-          echo "VERSION_NUMBER=$json.version_number" >> $env:GITHUB_OUTPUT
-          echo $json.version_number
+          $version = $json.version_number
+          echo "VERSION_NUMBER=${version}" >> $env:GITHUB_OUTPUT
+          echo $vesion
       
       - name: Test output
         shell: pwsh
