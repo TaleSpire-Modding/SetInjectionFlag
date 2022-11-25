@@ -1,4 +1,5 @@
-# Set Injection Flag Plugin
+# Set Injection Flag Plugin 
+[![Push to nuget feed on release](https://github.com/TaleSpire-Modding/SetInjectionFlag/actions/workflows/release.yml/badge.svg)](https://github.com/TaleSpire-Modding/SetInjectionFlag/actions/workflows/release.yml)
 
 This is a plugin for TaleSpire using BepInEx. This plugin lets BouncyRock developers know that logs being generated are from vanilla or modded instances.
 
