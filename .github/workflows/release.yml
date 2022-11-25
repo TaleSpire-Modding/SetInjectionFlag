@@ -31,6 +31,7 @@ jobs:
           # dotnet nuget push *.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source https://nuget.pkg.github.com/${{ github.repository_owner }} --skip-duplicate
           
       - name: Package for ThunderStore
+        id: package
         shell: pwsh
         run: |
           New-Item -Path 'thunderstore' -ItemType Directory
@@ -40,7 +41,8 @@ jobs:
           Copy-Item -Path README.md -Destination 'thunderstore'
           Copy-Item -Path SetInjectionFlag/bin/Release/net48/SetInjectionFlagPlugin.dll -Destination 'thunderstore'
           $json = Get-Content "manifest.json" | ConvertFrom-Json
-          echo "VERSION_NUMBER=${json.version_number}" >> $GITHUB_ENV
+          echo "VERSION_NUMBER=${json.version_number}" >> $GITHUB_OUTPUT
+          echo $json.version_number
       
       - uses: GreenTF/upload-thunderstore-package@v2.2
         with:
@@ -48,7 +50,7 @@ jobs:
           description: Allows players to flag that mods are installed for BouncyRock.
           token: ${{ secrets.BRCODING_TOKEN }}
           name: SetInjectionFlagPlugin # the name of the package
-          version: ${{env.VERSION_NUMBER}} # Use the version from manifest
+          version: ${{steps.package.outputs.VERSION_NUMBER}} # Use the version from manifest
           community: talespire
           path: thunderstore
           wrap: thunderstore
