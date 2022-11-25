@@ -21,6 +21,7 @@ Browse to the newly created ```bin/Debug``` or ```bin/Release``` folders and cop
 
 ## Changelog
 ```
+* 2.4.3 bump version and fix wrapping
 * 2.4.2 Test deploy using pipeline
 * 2.4.1 Updating package details and dependency
 * 2.4.0 Package released on Github and Nuget
