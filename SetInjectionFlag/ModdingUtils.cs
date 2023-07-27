@@ -1,12 +1,11 @@
-﻿using UnityEngine;
-using BepInEx;
-using UnityEngine.SceneManagement;
+﻿using BepInEx;
 using System;
 using System.Collections.Generic;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using JetBrains.Annotations;
 using TMPro;
+using UnityEngine.SceneManagement;
+using UnityEngine;
 
 namespace ModdingTales
 {
@@ -14,12 +13,12 @@ namespace ModdingTales
     {
         public enum LogLevel
         {
-            [UsedImplicitly] Inherited,
-            [UsedImplicitly] None,
-            [UsedImplicitly] Low,
-            [UsedImplicitly] Medium,
-            [UsedImplicitly] High,
-            [UsedImplicitly] All,
+            Inherited,
+            None,
+            Low,
+            Medium,
+            High,
+            All,
         }
 
         public static ConfigEntry<LogLevel> LogLevelConfig { get; set; }
