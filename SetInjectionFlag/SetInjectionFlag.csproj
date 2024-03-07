@@ -28,8 +28,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="TaleSpire" Version="0.0.12"></PackageReference>
-    <PackageReference Include="Talespire.BepInEx" Version="5.4.21"></PackageReference>
+    <PackageReference Include="TaleSpire" Version="1.1.0"></PackageReference>
+    <PackageReference Include="Talespire.BepInEx" Version="5.4.22"></PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

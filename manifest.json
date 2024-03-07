@@ -1,9 +1,9 @@
 {
     "name": "SetInjectionFlagPlugin",
-    "version_number": "2.5.0",
+    "version_number": "2.5.1",
     "website_url": "https://github.com/TaleSpire-Modding/SetInjectionFlag",
     "description": "Allows players to flag that mods are installed for BouncyRock.",
     "dependencies": [
-        "bbepisTaleSpire-BepInExPack-5.4.21"
+        "bbepisTaleSpire-BepInExPack-5.4.22"
     ]
 }
