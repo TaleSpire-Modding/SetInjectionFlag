@@ -54,36 +54,25 @@ namespace ModdingTales
 
         public static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            Debug.Log("Loading Scene: " + scene.name);
+
             foreach (var parentPlugin in ParentPlugins)
             {
                 try
                 {
-                    parentPlugin.Value.LogInfo("On Scene Loaded " + scene.name);
-                    Debug.Log("Loading Scene: " + scene.name);
-                    if (scene.name == "UI")
+                    var modListText = GetUITextByName("Panel_BetaWarning");
+                    if (!modListText) continue;
+                    var bepInPlugin =
+                        (BepInPlugin)Attribute.GetCustomAttribute(parentPlugin.Key.Item1.GetType(),
+                            typeof(BepInPlugin));
+                    if (modListText.text.EndsWith("</size>"))
                     {
-                        var betaText = GetUITextByName("BETA");
-                        if (betaText)
-                        {
-                            betaText.text = "INJECTED BUILD - unstable mods";
-                        }
+                        modListText.text += "\n\nMods Currently Installed:\n";
                     }
-                    else
-                    {
-                        var modListText = GetUITextByName("TextMeshPro Text");
-                        if (!modListText) continue;
-                        var bepInPlugin =
-                            (BepInPlugin)Attribute.GetCustomAttribute(parentPlugin.Key.Item1.GetType(),
-                                typeof(BepInPlugin));
-                        if (modListText.text.EndsWith("</size>"))
-                        {
-                            modListText.text += "\n\nMods Currently Installed:\n";
-                        }
 
-                        modListText.text += string.IsNullOrWhiteSpace(parentPlugin.Key.Item2) ? 
-                            $"\n{bepInPlugin.Name} - {bepInPlugin.Version}" : 
-                            $"\n{parentPlugin.Key.Item2} {bepInPlugin.Name} - {bepInPlugin.Version}";
-                    }
+                    modListText.text += string.IsNullOrWhiteSpace(parentPlugin.Key.Item2) ? 
+                        $"\n{bepInPlugin.Name} - {bepInPlugin.Version}" : 
+                        $"\n{parentPlugin.Key.Item2} {bepInPlugin.Name} - {bepInPlugin.Version}";
                 }
                 catch (Exception ex)
                 {
