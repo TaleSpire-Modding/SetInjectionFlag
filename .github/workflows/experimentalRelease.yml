@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - experimental
-    paths:
-      - 'manifest.json'
 
 jobs:
   Build_and_Release:
