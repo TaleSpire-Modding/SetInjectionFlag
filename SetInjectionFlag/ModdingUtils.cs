@@ -1,31 +1,22 @@
 ﻿using BepInEx;
+using BepInEx.Logging;
 using System;
 using System.Collections.Generic;
-using BepInEx.Configuration;
-using BepInEx.Logging;
 using TMPro;
 using UnityEngine.SceneManagement;
-using UnityEngine;
 
 namespace ModdingTales
 {
     public static class ModdingUtils
     {
-        public enum LogLevel
-        {
-            Inherited,
-            None,
-            Low,
-            Medium,
-            High,
-            All,
-        }
+        private static readonly HashSet<(BaseUnityPlugin, string)> ParentPlugins = new HashSet<(BaseUnityPlugin, string)>();
+        private static readonly ManualLogSource Logger = BepInEx.Logging.Logger.CreateLogSource($" {nameof(ModdingUtils)}");
 
-        public static ConfigEntry<LogLevel> LogLevelConfig { get; set; }
-
-        private static readonly Dictionary<(BaseUnityPlugin, string), ManualLogSource> ParentPlugins = new Dictionary<(BaseUnityPlugin, string), ManualLogSource>();
-        
-        public static TextMeshProUGUI GetUITextByName(string name)
+        /// <summary>
+        /// Get a TextMeshProUGUI by name
+        /// God I hate how inefficient this is but fortunately it's called rarely
+        /// </summary>
+        private static TextMeshProUGUI GetUITextByName(string name)
         {
             TextMeshProUGUI[] texts = UnityEngine.Object.FindObjectsOfType<TextMeshProUGUI>();
             for (int i = 0; i < texts.Length; i++)
@@ -38,46 +29,58 @@ namespace ModdingTales
             return null;
         }
 
+        /// <inheritdoc cref="Initialize(BaseUnityPlugin, string)"/>
+        public static void Initialize(BaseUnityPlugin parentPlugin)
+        {
+            Initialize(parentPlugin, string.Empty);
+        }
+
+        /// <summary>
+        /// Registers Plugin to be displayed in the Mod List
+        /// </summary>        
+        public static void Initialize(BaseUnityPlugin parentPlugin, string author)
+        {
+            AppStateManager.UsingCodeInjection = true;
+            ParentPlugins.Add((parentPlugin, author));
+        }
+
+        [Obsolete]
+        /// <inheritdoc cref="Initialize(BaseUnityPlugin, string)"/>
         public static void Initialize(BaseUnityPlugin parentPlugin, ManualLogSource logger, string author, bool startSocket = false)
         {
-            AppStateManager.UsingCodeInjection = true;
-            ParentPlugins.Add((parentPlugin,author), logger);
-            logger.LogInfo("Inside initialize");
+            Initialize(parentPlugin, author);
         }
 
-        public static void Initialize(BaseUnityPlugin parentPlugin, ManualLogSource logger, bool startSocket=false)
+        [Obsolete]
+        /// <inheritdoc cref="Initialize(BaseUnityPlugin, string)"/>
+        public static void Initialize(BaseUnityPlugin parentPlugin, ManualLogSource logger, bool startSocket = false)
         {
-            AppStateManager.UsingCodeInjection = true;
-            ParentPlugins.Add((parentPlugin,""),logger);
-            logger.LogInfo("Inside initialize");
+            Initialize(parentPlugin, "");
         }
 
-        public static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        internal static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            Debug.Log("Loading Scene: " + scene.name);
+            Logger.LogDebug("Loading Scene: " + scene.name);
 
-            foreach (var parentPlugin in ParentPlugins)
+            TextMeshProUGUI modListText = GetUITextByName("Panel_BetaWarning");
+            if (!modListText) return;
+
+            Logger.LogDebug("Found TextMeshProUGUI in Scene: " + scene.name);
+
+            if (modListText.text.EndsWith("</size>"))
             {
-                try
-                {
-                    var modListText = GetUITextByName("Panel_BetaWarning");
-                    if (!modListText) continue;
-                    var bepInPlugin =
-                        (BepInPlugin)Attribute.GetCustomAttribute(parentPlugin.Key.Item1.GetType(),
-                            typeof(BepInPlugin));
-                    if (modListText.text.EndsWith("</size>"))
-                    {
-                        modListText.text += "\n\nMods Currently Installed:\n";
-                    }
+                modListText.text += "\n\nMods Currently Installed:\n";
+            }
 
-                    modListText.text += string.IsNullOrWhiteSpace(parentPlugin.Key.Item2) ? 
-                        $"\n{bepInPlugin.Name} - {bepInPlugin.Version}" : 
-                        $"\n{parentPlugin.Key.Item2} {bepInPlugin.Name} - {bepInPlugin.Version}";
-                }
-                catch (Exception ex)
-                {
-                    parentPlugin.Value.LogFatal(ex);
-                }
+            foreach ((BaseUnityPlugin, string) parentPlugin in ParentPlugins)
+            {
+                BepInPlugin bepInPlugin = (BepInPlugin) Attribute.GetCustomAttribute(parentPlugin.Item1.GetType(),typeof(BepInPlugin));
+
+                modListText.text += string.IsNullOrWhiteSpace(parentPlugin.Item2) ? 
+                    $"\n{bepInPlugin.Name} - {bepInPlugin.Version}" : 
+                    $"\n{parentPlugin.Item2} {bepInPlugin.Name} - {bepInPlugin.Version}";
+
+                Logger.LogDebug("Added Mod to List: " + bepInPlugin.Name);
             }
         }
     }
