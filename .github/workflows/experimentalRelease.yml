@@ -21,7 +21,6 @@ jobs:
         run: |
           $json = Get-Content "manifest.json" | ConvertFrom-Json
           $version = $json.version_number
-          $version = "$version-beta"
           $name = $json.name
           $description = $json.description
           echo "VERSION_NUMBER=${version}" >> $env:GITHUB_OUTPUT
@@ -41,7 +40,7 @@ jobs:
         run: |
           cd SetInjectionFlag
           $pluginValue = (Get-Content ${{steps.package.outputs.PLUGIN}}) -Replace "0.0.0.0", "${{steps.package.outputs.VERSION_NUMBER}}.0" 
-          $projectValue = (Get-Content ${{steps.package.outputs.PROJECT}}) -Replace "<Version>0.0.0</Version>", "<Version>${{steps.package.outputs.VERSION_NUMBER}}</Version>" 
+          $projectValue = (Get-Content ${{steps.package.outputs.PROJECT}}) -Replace "<Version>0.0.0</Version>", "<Version>${{steps.package.outputs.VERSION_NUMBER}}-Beta</Version>" 
           Set-Content ${{steps.package.outputs.PLUGIN}} -Value $pluginValue
           Set-Content ${{steps.package.outputs.PROJECT}} -Value $projectValue
           dotnet restore ${{steps.package.outputs.PROJECT}}
