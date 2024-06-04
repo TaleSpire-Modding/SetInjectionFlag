@@ -8,6 +8,17 @@ using UnityEngine.SceneManagement;
 
 namespace ModdingTales
 {
+    public abstract class BepinexLogging
+    {
+        protected ManualLogSource Logger { get; }
+
+        protected BepinexLogging()
+        {
+            string LoggerID = GetType().AssemblyQualifiedName;
+            Logger = BepInEx.Logging.Logger.CreateLogSource(LoggerID);
+        }
+    }
+
     public static class ModdingUtils
     {
         private static readonly HashSet<(BaseUnityPlugin, string)> ParentPlugins = new HashSet<(BaseUnityPlugin, string)>();
