@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using PluginUtilities;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -10,7 +11,7 @@ namespace ModdingTales
     public static class ModdingUtils
     {
         private static readonly HashSet<(BaseUnityPlugin, string)> ParentPlugins = new HashSet<(BaseUnityPlugin, string)>();
-        private static readonly ManualLogSource Logger = BepInEx.Logging.Logger.CreateLogSource($" {nameof(ModdingUtils)}");
+        private static readonly ManualLogSource Logger = BepInEx.Logging.Logger.CreateLogSource($"{nameof(SetInjectionFlag)}.{nameof(ModdingUtils)}");
 
         /// <summary>
         /// Get a TextMeshProUGUI by name
