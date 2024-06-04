@@ -22,7 +22,8 @@ jobs:
         id: package
         run: |
           $json = Get-Content "manifest.json" | ConvertFrom-Json
-          $version = "$json.version_number-beta"
+          $version = $json.version_number
+          $version = "$version-beta"
           $name = $json.name
           $description = $json.description
           echo "VERSION_NUMBER=${version}" >> $env:GITHUB_OUTPUT
