@@ -1,5 +1,5 @@
 using BepInEx;
-using BepInEx.Configuration;
+using BepInEx.Logging;
 using JetBrains.Annotations;
 using ModdingTales;
 using UnityEngine.SceneManagement;
@@ -12,24 +12,20 @@ namespace PluginUtilities
         public const string Guid = "org.generic.plugins.setinjectionflag";
         public const string Name = "Set Injection Flag Plugin";
         public const string Version = "0.0.0.0";
-
-        
-        public static void DoConfig(ConfigFile config)
-        {
-            ModdingUtils.LogLevelConfig = config.Bind("Logging", "Level", ModdingUtils.LogLevel.Low);
-            if (ModdingUtils.LogLevelConfig.Value != ModdingUtils.LogLevel.Inherited) return;
-            ModdingUtils.LogLevelConfig.Value = ModdingUtils.LogLevel.None;
-            UnityEngine.Debug.Log("Logging level set to None, Inherited is for child plugins");
-        }
+        internal static ManualLogSource PluginLogger;
 
         [UsedImplicitly]
         private void Awake()
         {
-            Logger.LogInfo("In Awake for SetInjectionFlag Plug-in");
-            UnityEngine.Debug.Log("SetInjectionFlag Plug-in loaded");
-            ModdingUtils.Initialize(this, Logger);
+            // Set App state to let BR know it's a modded instance
+            Logger.LogDebug("Awake Triggered");
+            PluginLogger = Logger;
+            AppStateManager.UsingCodeInjection = true;
+            Logger.LogInfo("Loaded, You're now good to start modding!");
+            
+            // Update UI in main menu
+            ModdingUtils.AddPluginToMenuList(this);
             SceneManager.sceneLoaded += ModdingUtils.OnSceneLoaded;
-            DoConfig(Config);
         }
     }
 }
