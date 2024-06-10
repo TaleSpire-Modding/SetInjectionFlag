@@ -11,7 +11,7 @@ namespace ModdingTales
     public static class ModdingUtils
     {
         private static readonly HashSet<(BaseUnityPlugin, string)> ParentPlugins = new HashSet<(BaseUnityPlugin, string)>();
-        private static readonly ManualLogSource Logger = BepInEx.Logging.Logger.CreateLogSource($"{nameof(SetInjectionFlag)}.{nameof(ModdingUtils)}");
+        private static readonly ManualLogSource Logger = SetInjectionFlag.PluginLogger;
 
         /// <summary>
         /// Get a TextMeshProUGUI by name
@@ -30,33 +30,32 @@ namespace ModdingTales
             return null;
         }
 
-        /// <inheritdoc cref="Initialize(BaseUnityPlugin, string)"/>
-        public static void Initialize(BaseUnityPlugin parentPlugin)
+        /// <inheritdoc cref="AddPluginToMenuList(BaseUnityPlugin, string)"/>
+        public static void AddPluginToMenuList(BaseUnityPlugin parentPlugin)
         {
-            Initialize(parentPlugin, string.Empty);
+            AddPluginToMenuList(parentPlugin, string.Empty);
         }
 
         /// <summary>
         /// Registers Plugin to be displayed in the Mod List
         /// </summary>        
-        public static void Initialize(BaseUnityPlugin parentPlugin, string author)
+        public static void AddPluginToMenuList(BaseUnityPlugin parentPlugin, string author)
         {
-            AppStateManager.UsingCodeInjection = true;
             ParentPlugins.Add((parentPlugin, author));
         }
 
-        [Obsolete]
-        /// <inheritdoc cref="Initialize(BaseUnityPlugin, string)"/>
+        [Obsolete("See AddPluginToMenuList")]
+        /// <inheritdoc cref="AddPluginToMenuList(BaseUnityPlugin, string)"/>
         public static void Initialize(BaseUnityPlugin parentPlugin, ManualLogSource logger, string author, bool startSocket = false)
         {
-            Initialize(parentPlugin, author);
+            AddPluginToMenuList(parentPlugin, author);
         }
 
-        [Obsolete]
-        /// <inheritdoc cref="Initialize(BaseUnityPlugin, string)"/>
+        [Obsolete("See AddPluginToMenuList")]
+        /// <inheritdoc cref="AddPluginToMenuList(BaseUnityPlugin, string)"/>
         public static void Initialize(BaseUnityPlugin parentPlugin, ManualLogSource logger, bool startSocket = false)
         {
-            Initialize(parentPlugin, "");
+            AddPluginToMenuList(parentPlugin, "");
         }
 
         internal static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -75,13 +74,20 @@ namespace ModdingTales
 
             foreach ((BaseUnityPlugin, string) parentPlugin in ParentPlugins)
             {
-                BepInPlugin bepInPlugin = (BepInPlugin) Attribute.GetCustomAttribute(parentPlugin.Item1.GetType(),typeof(BepInPlugin));
+                try
+                {
+                    BepInPlugin bepInPlugin = (BepInPlugin)Attribute.GetCustomAttribute(parentPlugin.Item1.GetType(), typeof(BepInPlugin));
 
-                modListText.text += string.IsNullOrWhiteSpace(parentPlugin.Item2) ? 
-                    $"\n{bepInPlugin.Name} - {bepInPlugin.Version}" : 
-                    $"\n{parentPlugin.Item2} {bepInPlugin.Name} - {bepInPlugin.Version}";
+                    modListText.text += string.IsNullOrWhiteSpace(parentPlugin.Item2) ?
+                        $"\n{bepInPlugin.Name} - {bepInPlugin.Version}" :
+                        $"\n{parentPlugin.Item2} {bepInPlugin.Name} - {bepInPlugin.Version}";
 
-                Logger.LogDebug("Added Mod to List: " + bepInPlugin.Name);
+                    Logger.LogDebug("Added Mod to List: " + bepInPlugin.Name);
+                }
+                catch (Exception e)
+                {
+                    Logger.LogError("Error adding mod to list: " + e.Message);
+                }
             }
         }
     }
