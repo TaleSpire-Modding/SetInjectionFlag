@@ -72,6 +72,6 @@ jobs:
           token: ${{ secrets.BRCODING_TOKEN }}
           name: ${{steps.package.outputs.NAME}} # the name of the package
           version: ${{steps.package.outputs.VERSION_NUMBER}} # Use the version from manifest
-          community: TaleSpire
+          community: talespire
           path: ./thunderstore
           file: ./thunderstore.zip
