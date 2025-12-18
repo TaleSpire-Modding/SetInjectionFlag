@@ -21,6 +21,7 @@ Browse to the newly created ```bin/Debug``` or ```bin/Release``` folders and cop
 
 ## Changelog
 ```
+* 3.0.0 Recompile to keep up to date, no feature changes.
 * 2.6.0 Logging upgrade, Migrate to use BepInEx logging framework instead
 * 2.5.2 Seats Fix
 * 2.5.1 TaleWeaver Lite Fix
