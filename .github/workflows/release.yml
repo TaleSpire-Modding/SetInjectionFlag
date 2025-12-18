@@ -72,5 +72,5 @@ jobs:
           name: ${{steps.package.outputs.NAME}} # the name of the package
           version: ${{steps.package.outputs.VERSION_NUMBER}} # Use the version from manifest
           community: talespire
-          repo: talespire.thunderstore.io
-          deps: ${{steps.package.outputs.DEPENDENCIES}}
+          #repo: talespire.thunderstore.io
+          #deps: ${{steps.package.outputs.DEPENDENCIES}}
