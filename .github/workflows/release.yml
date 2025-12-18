@@ -64,7 +64,7 @@ jobs:
           Copy-Item -Path README.md -Destination 'thunderstore'
           Copy-Item -Path SetInjectionFlag/bin/Release/net48/SetInjectionFlagPlugin.dll -Destination 'thunderstore'
       
-      - uses: GreenTF/upload-thunderstore-package@v2.4
+      - uses: GreenTF/upload-thunderstore-package@v4.3
         with:
           namespace: brcoding # the thunderstore 'team' to publish under
           description: ${{steps.package.outputs.DESCRIPTION}} # Use the description from manifest
@@ -72,5 +72,5 @@ jobs:
           name: ${{steps.package.outputs.NAME}} # the name of the package
           version: ${{steps.package.outputs.VERSION_NUMBER}} # Use the version from manifest
           community: talespire
-          path: thunderstore
+          repo: talespire.thunderstore.io
           deps: ${{steps.package.outputs.DEPENDENCIES}}
