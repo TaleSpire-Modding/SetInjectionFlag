@@ -64,7 +64,7 @@ jobs:
           Copy-Item -Path README.md -Destination 'thunderstore'
           Copy-Item -Path SetInjectionFlag/bin/Release/net48/SetInjectionFlagPlugin.dll -Destination 'thunderstore'
       
-      - uses: GreenTF/upload-thunderstore-package@v2.2
+      - uses: GreenTF/upload-thunderstore-package@v2.4
         with:
           namespace: brcoding # the thunderstore 'team' to publish under
           description: ${{steps.package.outputs.DESCRIPTION}} # Use the description from manifest
