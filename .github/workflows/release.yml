@@ -73,6 +73,6 @@ jobs:
           name: ${{steps.package.outputs.NAME}} # the name of the package
           version: ${{steps.package.outputs.VERSION_NUMBER}} # Use the version from manifest
           community: talespire
-          file: /thunderstore/thunderstore/zip
+          file: ./thunderstore/thunderstore/zip
           #repo: talespire.thunderstore.io
           #deps: ${{steps.package.outputs.DEPENDENCIES}}
