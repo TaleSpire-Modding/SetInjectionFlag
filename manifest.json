@@ -5,7 +5,8 @@
     "description": "Allows players to flag that mods are installed for BouncyRock",
     "dependencies": [
         "bbepisTaleSpire-BepInExPack-5.4.22"
-    ]
+    ],
+    "communities": [ "TaleSpire" ]
 }
 
 
