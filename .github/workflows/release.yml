@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'manifest.json'
+    #paths:
+    #  - 'manifest.json'
 
 jobs:
   Build_and_Release:
@@ -63,6 +63,7 @@ jobs:
           Copy-Item -Path License.txt -Destination 'thunderstore'
           Copy-Item -Path README.md -Destination 'thunderstore'
           Copy-Item -Path SetInjectionFlag/bin/Release/net48/SetInjectionFlagPlugin.dll -Destination 'thunderstore'
+          Compress-Archive -Path /thunderstore/* -DestinationPath /thunderstore/thunderstore.zip -Force
       
       - uses: GreenTF/upload-thunderstore-package@v4.3
         with:
@@ -72,6 +73,6 @@ jobs:
           name: ${{steps.package.outputs.NAME}} # the name of the package
           version: ${{steps.package.outputs.VERSION_NUMBER}} # Use the version from manifest
           community: talespire
-          path: 'thunderstore'
+          file: /thunderstore/thunderstore/zip
           #repo: talespire.thunderstore.io
           #deps: ${{steps.package.outputs.DEPENDENCIES}}
