@@ -65,7 +65,7 @@ jobs:
           Copy-Item -Path SetInjectionFlag/bin/Release/net48/SetInjectionFlagPlugin.dll -Destination 'thunderstore'
           Compress-Archive -Path ./thunderstore/* -DestinationPath ./thunderstore/thunderstore.zip -Force
       
-      - uses: GreenTF/upload-thunderstore-package@v4.3
+      - uses: GreenTF/upload-thunderstore-package@55327864b734687f553e23309743a66af21dfc40
         with:
           namespace: brcoding # the thunderstore 'team' to publish under
           description: ${{steps.package.outputs.DESCRIPTION}} # Use the description from manifest
