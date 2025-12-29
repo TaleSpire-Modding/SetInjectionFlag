@@ -9,7 +9,7 @@ namespace PluginUtilities
     public abstract class DependencyUnityPlugin : BaseUnityPlugin
     {
         // Action to subscribe to for when this plugin is destroyed
-        private Action Destroyed;
+        public Action Destroyed;
 
         public static DependencyUnityPlugin[] GetPluginsForDependencies(Type type)
         {
