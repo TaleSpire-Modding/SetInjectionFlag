@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 namespace PluginUtilities
 {
     [BepInPlugin(Guid, Name, Version)]
-    public class SetInjectionFlag : BaseUnityPlugin
+    public class SetInjectionFlag : DependencyUnityPlugin
     {
         public const string Guid = "org.generic.plugins.setinjectionflag";
         public const string Name = "Set Injection Flag Plugin";
@@ -18,7 +18,7 @@ namespace PluginUtilities
         internal static string originalText;
 
         [UsedImplicitly]
-        private void Awake()
+        protected override void OnAwake()
         {
             // Set App state to let BR know it's a modded instance
             Logger.LogDebug("Awake Triggered");
@@ -36,7 +36,7 @@ namespace PluginUtilities
         /// Even if you disable the plugin, we want to keep the flag set
         /// </summary>
         [UsedImplicitly]
-        private void OnDestroy()
+        protected override void OnDestroyed()
         {
             if (modListText != null)
             {

@@ -21,6 +21,7 @@ Browse to the newly created ```bin/Debug``` or ```bin/Release``` folders and cop
 
 ## Changelog
 ```
+* 3.3.0 Implement DependencyUnityPlugin to manage dependencies better. Fixed some minor issues with the mod list UI.
 * 3.2.0 Re-implemented the UI Mod List. This is now dynamically updated when mods are added/removed from the list.
 * 3.1.0 Added ConfigurationAttributes to allow extra information to be appended to configs and usable for ConfigManager in the future
 * 3.0.0 Recompile to keep up to date, no feature changes.

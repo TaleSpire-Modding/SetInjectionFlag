@@ -75,6 +75,8 @@ namespace ModdingTales
 
         internal static void OnSceneUnloaded(Scene scene)
         {
+            if (scene.name != "Login")
+                return;
             SetInjectionFlag.modListText = null;
             SetInjectionFlag.originalText = null;
         }
