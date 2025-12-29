@@ -21,6 +21,7 @@ Browse to the newly created ```bin/Debug``` or ```bin/Release``` folders and cop
 
 ## Changelog
 ```
+* 3.3.2 DependencyUnityPlugins are now used to subscribe when those are destroyed too if/when appended to the mod list.
 * 3.3.1 Changed Destroyed Action to public for compatibility with other/future mods.
 * 3.3.0 Implement DependencyUnityPlugin to manage dependencies better. Fixed some minor issues with the mod list UI.
 * 3.2.0 Re-implemented the UI Mod List. This is now dynamically updated when mods are added/removed from the list.

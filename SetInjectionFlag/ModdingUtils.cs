@@ -29,16 +29,31 @@ namespace ModdingTales
             return null;
         }
 
-        /// <inheritdoc cref="AddPluginToMenuList(BaseUnityPlugin, string)"/>
-        public static void AddPluginToMenuList(BaseUnityPlugin parentPlugin)
+        /// <inheritdoc cref="AddPluginToMenuList(DependencyUnityPlugin, string)"/>
+        public static void AddPluginToMenuList(DependencyUnityPlugin parentPlugin)
         {
             AddPluginToMenuList(parentPlugin, string.Empty);
         }
 
-        /// <inheritdoc cref="RemovePluginFromMenuList(BaseUnityPlugin, string)"/>
-        public static void RemovePluginFromMenuList(BaseUnityPlugin parentPlugin)
+        /// <summary>
+        /// Registers Plugin to be displayed in the Mod List
+        /// Automatically removes it when the plugin is destroyed
+        /// </summary>        
+        public static void AddPluginToMenuList(DependencyUnityPlugin parentPlugin, string author)
         {
-            RemovePluginFromMenuList(parentPlugin, string.Empty);
+            ParentPlugins.Add((parentPlugin, author));
+            RefreshUIList();
+
+            parentPlugin.Destroyed += () =>
+            {
+                RemovePluginFromMenuList(parentPlugin, author);
+            };
+        }
+
+        /// <inheritdoc cref="AddPluginToMenuList(BaseUnityPlugin, string)"/>
+        public static void AddPluginToMenuList(BaseUnityPlugin parentPlugin)
+        {
+            AddPluginToMenuList(parentPlugin, string.Empty);
         }
 
         /// <summary>
@@ -48,6 +63,12 @@ namespace ModdingTales
         {
             ParentPlugins.Add((parentPlugin, author));
             RefreshUIList();
+        }
+
+        /// <inheritdoc cref="RemovePluginFromMenuList(BaseUnityPlugin, string)"/>
+        public static void RemovePluginFromMenuList(BaseUnityPlugin parentPlugin)
+        {
+            RemovePluginFromMenuList(parentPlugin, string.Empty);
         }
 
         /// <summary>
