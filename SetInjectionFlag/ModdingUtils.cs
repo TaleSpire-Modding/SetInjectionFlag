@@ -3,7 +3,6 @@ using BepInEx.Logging;
 using PluginUtilities;
 using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine.SceneManagement;
 
 namespace ModdingTales
@@ -17,9 +16,9 @@ namespace ModdingTales
         /// Get a TextMeshProUGUI by name
         /// God I hate how inefficient this is but fortunately it's called rarely
         /// </summary>
-        private static TextMeshProUGUI GetUITextByName(string name)
+        private static Bounce.Localization.UiText GetUITextByName(string name)
         {
-            TextMeshProUGUI[] texts = UnityEngine.Object.FindObjectsOfType<TextMeshProUGUI>();
+            Bounce.Localization.UiText[] texts = UnityEngine.Object.FindObjectsOfType<Bounce.Localization.UiText>();
             for (int i = 0; i < texts.Length; i++)
             {
                 if (texts[i].name == name)
@@ -36,12 +35,28 @@ namespace ModdingTales
             AddPluginToMenuList(parentPlugin, string.Empty);
         }
 
+        /// <inheritdoc cref="RemovePluginFromMenuList(BaseUnityPlugin, string)"/>
+        public static void RemovePluginFromMenuList(BaseUnityPlugin parentPlugin)
+        {
+            RemovePluginFromMenuList(parentPlugin, string.Empty);
+        }
+
         /// <summary>
         /// Registers Plugin to be displayed in the Mod List
         /// </summary>        
         public static void AddPluginToMenuList(BaseUnityPlugin parentPlugin, string author)
         {
             ParentPlugins.Add((parentPlugin, author));
+            RefreshUIList();
+        }
+
+        /// <summary>
+        /// Removes a registered plugin from the Mod List
+        /// </summary>        
+        public static void RemovePluginFromMenuList(BaseUnityPlugin parentPlugin, string author)
+        {
+            ParentPlugins.Remove((parentPlugin, author));
+            RefreshUIList();
         }
 
         [Obsolete("See AddPluginToMenuList")]
@@ -58,18 +73,40 @@ namespace ModdingTales
             AddPluginToMenuList(parentPlugin, "");
         }
 
+        internal static void OnSceneUnloaded(Scene scene)
+        {
+            SetInjectionFlag.modListText = null;
+            SetInjectionFlag.originalText = null;
+        }
+
         internal static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             Logger.LogDebug("Loading Scene: " + scene.name);
 
-            TextMeshProUGUI modListText = GetUITextByName("Panel_BetaWarning");
+            Bounce.Localization.UiText modListText = GetUITextByName("Copyright Text");
+            SetInjectionFlag.modListText = modListText; 
             if (!modListText) return;
-
             Logger.LogDebug("Found TextMeshProUGUI in Scene: " + scene.name);
 
-            if (modListText.text.EndsWith("</size>"))
+            SetInjectionFlag.originalText = modListText.text;
+
+            RefreshUIList();
+        }
+
+        /// <summary>
+        /// Updates the UI list of mods if present
+        /// </summary>
+        internal static void RefreshUIList()
+        {
+            if (SetInjectionFlag.modListText == null) 
+                return;
+
+            SetInjectionFlag.modListText.text = SetInjectionFlag.originalText;
+
+            // legacy check to avoid duplicating the header
+            if (SetInjectionFlag.modListText.text.EndsWith("</size>"))
             {
-                modListText.text += "\n\nMods Currently Installed:\n";
+                SetInjectionFlag.modListText.text += "\n\nInstalled Mods:";
             }
 
             foreach ((BaseUnityPlugin, string) parentPlugin in ParentPlugins)
@@ -78,10 +115,8 @@ namespace ModdingTales
                 {
                     BepInPlugin bepInPlugin = (BepInPlugin)Attribute.GetCustomAttribute(parentPlugin.Item1.GetType(), typeof(BepInPlugin));
 
-                    modListText.text += string.IsNullOrWhiteSpace(parentPlugin.Item2) ?
-                        $"\n{bepInPlugin.Name} - {bepInPlugin.Version}" :
-                        $"\n{parentPlugin.Item2} {bepInPlugin.Name} - {bepInPlugin.Version}";
-
+                    // for now we are ignoring the author name passed in
+                    SetInjectionFlag.modListText.text += $"\n<indent=5%>{bepInPlugin.Name} - {bepInPlugin.Version}</indent>";
                     Logger.LogDebug("Added Mod to List: " + bepInPlugin.Name);
                 }
                 catch (Exception e)

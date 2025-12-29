@@ -14,6 +14,9 @@ namespace PluginUtilities
         public const string Version = "0.0.0.0";
         internal static ManualLogSource PluginLogger;
 
+        internal static Bounce.Localization.UiText modListText;
+        internal static string originalText;
+
         [UsedImplicitly]
         private void Awake()
         {
@@ -22,10 +25,23 @@ namespace PluginUtilities
             PluginLogger = Logger;
             AppStateManager.UsingCodeInjection = true;
             Logger.LogInfo("Loaded, You're now good to start modding!");
-            
+
             // Update UI in main menu
             ModdingUtils.AddPluginToMenuList(this);
             SceneManager.sceneLoaded += ModdingUtils.OnSceneLoaded;
+            SceneManager.sceneUnloaded += ModdingUtils.OnSceneUnloaded;
+        }
+
+        /// <summary>
+        /// Even if you disable the plugin, we want to keep the flag set
+        /// </summary>
+        [UsedImplicitly]
+        private void OnDestroy()
+        {
+            if (modListText != null)
+            {
+                modListText.text = originalText;
+            }
         }
     }
 }
