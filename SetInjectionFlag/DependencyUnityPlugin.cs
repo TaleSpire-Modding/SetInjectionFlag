@@ -34,12 +34,23 @@ namespace PluginUtilities
             foreach (var dep in deps)
             {
                 // When a dependency is destroyed, destroy this plugin as well
-                dep.Destroyed += () => {
-                    Destroy(this);
-                };
+                dep.Destroyed += DestroyAndUnbind;
             }
 
             OnAwake();
+        }
+
+        // Called when a dependency is destroyed to clean up this plugin
+        private void DestroyAndUnbind()
+        {
+            var deps = GetPluginsForDependencies(GetType());
+            foreach (var dep in deps)
+            {
+                // When a dependency is destroyed, unbind itself to prevent recall
+                dep.Destroyed -= DestroyAndUnbind;
+            }
+
+            Destroy(this);
         }
 
         /// <summary>
