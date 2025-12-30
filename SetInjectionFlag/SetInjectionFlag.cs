@@ -23,11 +23,11 @@ namespace PluginUtilities
             // Set App state to let BR know it's a modded instance
             Logger.LogDebug("Awake Triggered");
             PluginLogger = Logger;
-            AppStateManager.UsingCodeInjection = true;
             Logger.LogInfo("Loaded, You're now good to start modding!");
 
+            AppStateManager.UsingCodeInjection = true;
+
             // Update UI in main menu
-            ModdingUtils.AddPluginToMenuList(this);
             SceneManager.sceneLoaded += ModdingUtils.OnSceneLoaded;
             SceneManager.sceneUnloaded += ModdingUtils.OnSceneUnloaded;
         }

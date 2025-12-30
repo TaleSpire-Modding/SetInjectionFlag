@@ -9,7 +9,7 @@ namespace ModdingTales
 {
     public static class ModdingUtils
     {
-        private static readonly HashSet<(BaseUnityPlugin, string)> ParentPlugins = new HashSet<(BaseUnityPlugin, string)>();
+        private static readonly HashSet<BaseUnityPlugin> ParentPlugins = new HashSet<BaseUnityPlugin>();
         private static readonly ManualLogSource Logger = SetInjectionFlag.PluginLogger;
 
         /// <summary>
@@ -29,55 +29,51 @@ namespace ModdingTales
             return null;
         }
 
-        /// <inheritdoc cref="AddPluginToMenuList(DependencyUnityPlugin, string)"/>
+        [Obsolete("This automatically gets called for plugins that inherit DependencyUnityPlugin on Awake")]
         public static void AddPluginToMenuList(DependencyUnityPlugin parentPlugin)
         {
             AddPluginToMenuList(parentPlugin, string.Empty);
         }
 
-        /// <summary>
-        /// Registers Plugin to be displayed in the Mod List
-        /// Automatically removes it when the plugin is destroyed
-        /// </summary>        
+        [Obsolete("This automatically gets called for plugins that inherit DependencyUnityPlugin on Awake")]
         public static void AddPluginToMenuList(DependencyUnityPlugin parentPlugin, string author)
         {
-            ParentPlugins.Add((parentPlugin, author));
+            if (ParentPlugins.Contains(parentPlugin))
+                return;
+
+            ParentPlugins.Add(parentPlugin);
             RefreshUIList();
 
             parentPlugin.Destroyed += () =>
             {
-                RemovePluginFromMenuList(parentPlugin, author);
+                RemovePluginFromMenuList(parentPlugin);
             };
         }
 
-        /// <inheritdoc cref="AddPluginToMenuList(BaseUnityPlugin, string)"/>
+        [Obsolete("This automatically gets called for plugins that inherit DependencyUnityPlugin on Awake")]
         public static void AddPluginToMenuList(BaseUnityPlugin parentPlugin)
         {
-            AddPluginToMenuList(parentPlugin, string.Empty);
+            ParentPlugins.Add(parentPlugin);
+            RefreshUIList();
         }
 
-        /// <summary>
-        /// Registers Plugin to be displayed in the Mod List
-        /// </summary>        
+        [Obsolete("This automatically gets called for plugins that inherit DependencyUnityPlugin on Awake")]
         public static void AddPluginToMenuList(BaseUnityPlugin parentPlugin, string author)
         {
-            ParentPlugins.Add((parentPlugin, author));
-            RefreshUIList();
+            AddPluginToMenuList(parentPlugin);
         }
 
-        /// <inheritdoc cref="RemovePluginFromMenuList(BaseUnityPlugin, string)"/>
+        [Obsolete("This automatically gets called for plugins that inherit DependencyUnityPlugin on Destroy")]
         public static void RemovePluginFromMenuList(BaseUnityPlugin parentPlugin)
         {
-            RemovePluginFromMenuList(parentPlugin, string.Empty);
+            ParentPlugins.Remove(parentPlugin);
+            RefreshUIList();
         }
 
-        /// <summary>
-        /// Removes a registered plugin from the Mod List
-        /// </summary>        
+        [Obsolete("This automatically gets called for plugins that inherit DependencyUnityPlugin on Destroy")]
         public static void RemovePluginFromMenuList(BaseUnityPlugin parentPlugin, string author)
         {
-            ParentPlugins.Remove((parentPlugin, author));
-            RefreshUIList();
+            RemovePluginFromMenuList(parentPlugin);
         }
 
         [Obsolete("See AddPluginToMenuList")]
@@ -96,7 +92,7 @@ namespace ModdingTales
 
         internal static void OnSceneUnloaded(Scene scene)
         {
-            if (scene.name != "Login")
+            if (scene == null || scene.name != "Login")
                 return;
             SetInjectionFlag.modListText = null;
             SetInjectionFlag.originalText = null;
@@ -104,7 +100,8 @@ namespace ModdingTales
 
         internal static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            Logger.LogDebug("Loading Scene: " + scene.name);
+            if (scene == null || scene.name != "Login")
+                return;
 
             Bounce.Localization.UiText modListText = GetUITextByName("Copyright Text");
             SetInjectionFlag.modListText = modListText; 
@@ -132,11 +129,11 @@ namespace ModdingTales
                 SetInjectionFlag.modListText.text += "\n\nInstalled Mods:";
             }
 
-            foreach ((BaseUnityPlugin, string) parentPlugin in ParentPlugins)
+            foreach (BaseUnityPlugin parentPlugin in ParentPlugins)
             {
                 try
                 {
-                    BepInPlugin bepInPlugin = (BepInPlugin)Attribute.GetCustomAttribute(parentPlugin.Item1.GetType(), typeof(BepInPlugin));
+                    BepInPlugin bepInPlugin = (BepInPlugin)Attribute.GetCustomAttribute(parentPlugin.GetType(), typeof(BepInPlugin));
 
                     // for now we are ignoring the author name passed in
                     SetInjectionFlag.modListText.text += $"\n<indent=5%>{bepInPlugin.Name} - {bepInPlugin.Version}</indent>";

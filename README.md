@@ -21,6 +21,7 @@ Browse to the newly created ```bin/Debug``` or ```bin/Release``` folders and cop
 
 ## Changelog
 ```
+* 3.3.4 Optimization for scene load/unload. DependencyUnityPlugin now auto-subscribes to SIF.
 * 3.3.3 Fixed an issue where a DependencyUnityPlugin could be called to destroy multiple times.
 * 3.3.2 DependencyUnityPlugins are now used to subscribe when those are destroyed too if/when appended to the mod list.
 * 3.3.1 Changed Destroyed Action to public for compatibility with other/future mods.

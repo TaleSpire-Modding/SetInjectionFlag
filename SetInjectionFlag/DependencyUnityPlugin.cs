@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
 using JetBrains.Annotations;
+using ModdingTales;
 using System;
 using System.Linq;
 
@@ -13,13 +14,10 @@ namespace PluginUtilities
 
         public static DependencyUnityPlugin[] GetPluginsForDependencies(Type type)
         {
-            // Get all dependency attributes on the class
-            var deps = type
-                .GetCustomAttributes(typeof(BepInDependency), inherit: true)
-                .Cast<BepInDependency>();
-
             // Match to loaded plugins
-            return deps
+            return type
+                .GetCustomAttributes(typeof(BepInDependency), inherit: true)
+                .Cast<BepInDependency>()
                 .Where(d => Chainloader.PluginInfos.ContainsKey(d.DependencyGUID))
                 .Select(d => Chainloader.PluginInfos[d.DependencyGUID].Instance)
                 .Where(d => d is DependencyUnityPlugin)
@@ -38,6 +36,7 @@ namespace PluginUtilities
             }
 
             OnAwake();
+            ModdingUtils.AddPluginToMenuList(this);
         }
 
         // Called when a dependency is destroyed to clean up this plugin
