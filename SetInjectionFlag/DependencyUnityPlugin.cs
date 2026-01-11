@@ -31,7 +31,7 @@ namespace PluginUtilities
                 Disable();
         }
 
-        private static void Enable() 
+        protected static void Enable() 
         {
             if (PluginGameObject.GetComponent<T>() == null)
             {
@@ -39,7 +39,7 @@ namespace PluginUtilities
 
                 foreach (Type depType in RequiredPlugins)
                 {
-                    MethodInfo enableMethod = depType.GetMethod(nameof(Enable), BindingFlags.NonPublic | BindingFlags.Static);
+                    MethodInfo enableMethod = depType.GetMethod(nameof(Enable), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
                     enableMethod?.Invoke(null, null);
                 }
 
@@ -47,7 +47,7 @@ namespace PluginUtilities
             }
         }
 
-        private static void Disable() 
+        protected static void Disable() 
         {
             if (PluginGameObject.GetComponent<T>() != null)
             {
@@ -55,7 +55,7 @@ namespace PluginUtilities
 
                 foreach (Type depType in DependantPlugins)
                 {
-                    MethodInfo disableMethod = depType.GetMethod(nameof(Disable), BindingFlags.NonPublic | BindingFlags.Static);
+                    MethodInfo disableMethod = depType.GetMethod(nameof(Disable), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
                     disableMethod?.Invoke(null, null);
                 }
 
@@ -79,6 +79,11 @@ namespace PluginUtilities
             IEnumerable<DependencyUnityPlugin> dep = GetPluginsForDependencies(GetType()).Where(d => d is IDependencyUnityPlugin);
             RequiredPlugins = dep.Select(s => s.GetType()).ToArray();
 
+            foreach (Type depType in RequiredPlugins)
+            {
+                Logger.LogDebug($"Adding required plugin {depType.FullName} to {typeof(T).FullName}");
+            }
+
             foreach (IDependencyUnityPlugin d in dep.Cast<IDependencyUnityPlugin>()) {
                 d.AddDep(this);
             }
@@ -91,6 +96,7 @@ namespace PluginUtilities
             Type depType = dep.GetType();
             if (!DependantPlugins.Contains(depType))
             {
+                Logger.LogDebug($"Adding dependant plugin {depType.FullName} to {typeof(T).FullName}");
                 DependantPlugins.Add(depType);
             }
         }

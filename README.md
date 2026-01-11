@@ -131,6 +131,7 @@ using PluginUtilities;
 
 ## Changelog
 ```
+* 3.4.1 Fix System reflection issue with DependencyUnityPlugin generic type constraint.
 * 3.4.0 Add configuration option to enable/disable the plugin without uninstalling it via DependencyUnityPlugin<T>.
 * 3.3.4 Optimization for scene load/unload. DependencyUnityPlugin now auto-subscribes to SIF.
 * 3.3.3 Fixed an issue where a DependencyUnityPlugin could be called to destroy multiple times.
