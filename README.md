@@ -65,7 +65,7 @@ using PluginUtilities;
 	// After/Proper Implementation with Chainload binding and enabling/disabling plus config setup and lifecycle management
 	[BepInPlugin(Guid, Name, Version)]
 	[BepInDependency(SetInjectionFlag.Guid)]
-	MyPluginB: DependencyUnityPlugin<MyPlugin>B
+	MyPluginB: DependencyUnityPlugin<MyPluginB>
 	{   
 		// Consts to describe the plugin
 		public const string Guid = "Your.PluginB.Guid.Here";
