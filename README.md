@@ -2,6 +2,7 @@
 [![Push to nuget feed on release](https://github.com/TaleSpire-Modding/SetInjectionFlag/actions/workflows/release.yml/badge.svg)](https://github.com/TaleSpire-Modding/SetInjectionFlag/actions/workflows/release.yml)
 
 This is a plugin for TaleSpire using BepInEx. This plugin lets BouncyRock developers know that logs being generated are from vanilla or modded instances.
+There is additional functionality for developers to enable dynamic auto-binding of plugin dependencies via Bepinex Chainloader.
 
 ## Install
 
@@ -19,8 +20,118 @@ Build the project (Now using Nuget for package dependency).
 
 Browse to the newly created ```bin/Debug``` or ```bin/Release``` folders and copy the ```SetInjectionFlagPlugin.dll``` to ```Steam\steamapps\common\TaleSpire\BepInEx\plugins```
 
+## Developer usage of DependencyUnityPlugin<T>
+There is a new generic abstract class `DependencyUnityPlugin<T>` that can be used instead of `BaseUnityPlugin` to help manage dependencies and plugin lifecycle better.
+This class implements some new virtual methods that can be overridden to handle configuration setup, Awake and Destroy events that respects the bepinex chainloader.
+By using the generic abstract class, Bepinex ChainLoader is respected whenever plugins are dynamically added/removed from the mod list, and the plugin can be enabled/disabled via config.
+This is designed so the developer does not need to implement checks for whether the plugin is enabled/disabled or not, and can focus on the actual plugin logic.
+
+```CSharp
+using BepInEx;
+using BepInEx.Logging;
+using HarmonyLib;
+using ModdingTales;
+using PluginUtilities;
+
+	// Before/Basic Implementation without Chainload binding or enabling/disabling
+	[BepInPlugin(Guid, Name, Version)]
+	[BepInDependency(SetInjectionFlag.Guid)]
+	MyPluginA: BaseUnityPlugin
+	{
+		// Consts to describe the plugin
+		public const string Guid = "Your.PluginA.Guid.Here";
+        public const string Name = "Your PluginA Name";
+        public const string Version = "0.0.0.0";
+
+		// Config Entries
+		internal static ConfigEntry<int> Value;
+
+	    void Awake()
+	    {
+			Value = Config.Bind("General", nameof(Value), 100);
+
+	        Logger.LogInfo($"In Awake for {Name}");
+            harmony = new Harmony(Guid);
+            harmony.PatchAll();
+
+			// Registers Plugin in Mod List UI (Automatically added/removed if use DependencyUnityPlugin or DependencyUnityPlugin<T>)
+			ModdingUtils.AddPluginToMenuList(this);
+
+			// Do Some Other Work Here
+	    }
+
+	}
+
+	// After/Proper Implementation with Chainload binding and enabling/disabling plus config setup and lifecycle management
+	[BepInPlugin(Guid, Name, Version)]
+	[BepInDependency(SetInjectionFlag.Guid)]
+	MyPluginB: DependencyUnityPlugin<MyPlugin>B
+	{   
+		// Consts to describe the plugin
+		public const string Guid = "Your.PluginB.Guid.Here";
+        public const string Name = "Your PluginB Name";
+        public const string Version = "0.0.0.0";
+
+		// tracking Harmony here for unpatching on destroy
+		internal static Harmony harmony;
+
+		// Config Entries
+		internal static ConfigEntry<int> Value;
+
+
+		// Config Entry Callbacks
+		private static void ConfigEntryUpdateCallback(object _)
+		{
+			
+			// Something to do when config entry is updated (not to be confused with enabled which is from UnityEngine.Behaviour)
+			if (Enabled) {
+				// Plugin is enabled so we should do something
+			} else {
+				// Plugin is disabled so we can ignore the callback
+			}
+		}
+
+
+		// Implement your config binding here
+		protected override void OnSetupConfig(ConfigFile config)
+        {
+            // Create attribute for config entry
+			ConfigurationAttributes configurationAttributes = new ConfigurationAttributes
+            {
+                CallbackAction = ConfigEntryUpdateCallback
+            };
+
+			// Create description for config entry
+			ConfigDescription myConfigDescription = new ConfigDescription("", null, configurationAttributes);
+
+			// Bind with description and attributes
+			Value = Config.Bind("General", nameof(Value), 100, myConfigDescription);
+        }
+
+
+		// Implement code to run on Awake here (if the plugin is enabled)
+		protected override void OnAwake()
+        {
+            Logger.LogInfo($"In Awake for {Name}");
+            harmony = new Harmony(Guid);
+            harmony.PatchAll();
+
+			// Do Some Other Work Here
+        }
+
+		// Implement code to run on Destroy here (if the plugin is disabled/removed)
+		protected override void OnDestroyed()
+        {
+            harmony.UnpatchSelf();
+
+			// Cleanup resources here
+        }
+	}
+```
+
 ## Changelog
 ```
+* 3.4.0 Add configuration option to enable/disable the plugin without uninstalling it via DependencyUnityPlugin<T>.
 * 3.3.4 Optimization for scene load/unload. DependencyUnityPlugin now auto-subscribes to SIF.
 * 3.3.3 Fixed an issue where a DependencyUnityPlugin could be called to destroy multiple times.
 * 3.3.2 DependencyUnityPlugins are now used to subscribe when those are destroyed too if/when appended to the mod list.

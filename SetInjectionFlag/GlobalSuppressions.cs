@@ -5,5 +5,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "<Pending>", Scope = "member", Target = "~M:PluginUtilities.SetInjectionFlag.Awake")]
 [assembly: SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>", Scope = "member", Target = "~M:ModdingTales.ModdingUtils.OnSceneLoaded(UnityEngine.SceneManagement.Scene,UnityEngine.SceneManagement.LoadSceneMode)")]
+[assembly: SuppressMessage("Style", "IDE0130:Namespace does not match folder structure", Justification = "Changing Namespace now would have dire consequences", Scope = "namespace", Target = "~N:PluginUtilities")]
+[assembly: SuppressMessage("Style", "IDE0130:Namespace does not match folder structure", Justification = "Changing Namespace now would have dire consequences", Scope = "namespace", Target = "~N:ModdingTales")]

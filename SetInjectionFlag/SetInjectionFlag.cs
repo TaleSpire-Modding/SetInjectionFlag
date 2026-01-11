@@ -1,4 +1,5 @@
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using JetBrains.Annotations;
 using ModdingTales;
@@ -7,7 +8,7 @@ using UnityEngine.SceneManagement;
 namespace PluginUtilities
 {
     [BepInPlugin(Guid, Name, Version)]
-    public class SetInjectionFlag : DependencyUnityPlugin
+    public class SetInjectionFlag : DependencyUnityPlugin<SetInjectionFlag>
     {
         public const string Guid = "org.generic.plugins.setinjectionflag";
         public const string Name = "Set Injection Flag Plugin";
@@ -16,6 +17,21 @@ namespace PluginUtilities
 
         internal static Bounce.Localization.UiText modListText;
         internal static string originalText;
+
+        /// <summary>
+        /// setups config even if not enabled
+        /// </summary>
+        protected override void OnSetupConfig(ConfigFile config)
+        {
+            // Doing an early override to garauntee this is enabled.
+            // DO NOT DO THIS WITH OTHER PLUGINS
+            if (!EnabledConfig())
+            {
+                Logger.LogWarning("Overriding disabled state to enabled for modding purposes");
+                PluginEnabled.Value = true;
+                config.Save();
+            }
+        }
 
         [UsedImplicitly]
         protected override void OnAwake()
@@ -41,6 +57,16 @@ namespace PluginUtilities
             if (modListText != null)
             {
                 modListText.text = originalText;
+            }
+
+            SceneManager.sceneLoaded -= ModdingUtils.OnSceneLoaded;
+            SceneManager.sceneUnloaded -= ModdingUtils.OnSceneUnloaded;
+
+            // re-enable the plugin if was disabled
+            if (!Enabled)
+            {
+                Logger.LogError("You Disabled this Plugin when you shouldn't have");
+                PluginEnabled.Value = true;
             }
         }
     }
